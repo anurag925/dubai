@@ -10,14 +10,10 @@ class ApplicationService
     end
   end
 
-  def initialize(_args)
-    raise NotImplementedError
-  end
-
-  def call
-    raise NotImplementedError
-  end
-
+  # method returns success from a given service
+  # @param msg [String]
+  # @param data [Any]
+  # @returns [Resonse]
   def success(msg: '', data: {})
     Response.new(true, msg, data)
   end

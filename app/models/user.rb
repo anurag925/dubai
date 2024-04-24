@@ -35,6 +35,10 @@ class User < ApplicationRecord
   enum status: { created: 0, verified: 1, active: 3, inactive: 4, blocked: 5 }
   enum type: { admin: 0, area_development_officer: 1, master_distributor: 2, super_distributor: 3, distributor: 4 }
 
+  def verified?
+    status != 'created'
+  end
+
   def token
     Utils::Jwt..encode({ id:, mobile_number: })
   end

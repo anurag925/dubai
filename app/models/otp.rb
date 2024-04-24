@@ -24,6 +24,7 @@ class Otp < ApplicationRecord
 
   module Action
     REGISTRATION = 'registration'
+    LOGIN = 'login'
   end
 
   # def generate(user, action)

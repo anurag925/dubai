@@ -5,12 +5,31 @@ module Api
     # apis for users
     class UsersController < ApplicationController
       def register
+        response = Users::RegistrationService.call(register_params)
+        json_success(msg: response.msg, data: response.data) if response.success?
+
+        json_failure(msg: response.msg, data: response.data)
+      end
+
+      def login
+        response = Users::LoginService.call(login_params)
+        json_success(msg: response.msg, data: response.data) if response.success?
+
+        json_unauthorised(msg: response.msg, data: response.data)
       end
 
       private
 
       def register_params
         params.require(:user).permit(:mobile_number, :otp)
+      end
+
+      def login_params
+        params.require(:user).permit(:mobile_number, :otp)
+      end
+
+      def user
+        @user ||= User.find_by(mobile_number: login_params[:mobile_number])
       end
     end
   end

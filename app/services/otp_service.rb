@@ -10,17 +10,24 @@ class OtpService < ApplicationService
   end
 
   # method used for generating otp
-  # @param user [User]
   # @param action [String]
   # @returns [Response]
   def generate(action)
-    created = Otp.mobile.create(action:, value:, user_id: user.id, receiver: user.mobile_number)
-    success(data: created) if created
-
-    error(msg: 'unable to generate otp')
+    otp = Otp.mobile.create!(action:, value:, user_id: user.id, receiver: user.mobile_number)
+    success(data: otp)
+  rescue StandardError
+    error(msg: 'unable to generate otp', data: otp.errors.full_messages.to_sentence)
   end
 
-  def verify(value)
+  # method used for generating otp
+  # @param action [String]
+  # @param value [String]
+  # @returns [Response]
+  def verify(action, value)
+    otp = Otp.where(action:, user_id: user.id, receiver: user.mobile_number, verified: false).last
+    success(msg: 'otp verification successfull') if otp && otp.value.eql?(value)
+
+    error(msg: 'otp verification failed')
   end
 
   private

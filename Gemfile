@@ -60,14 +60,13 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem 'annotate'
   gem 'brakeman'
   gem 'rubocop'
+  gem 'rubocop-rails'
   gem 'rubycritic', require: false
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'tapioca', require: false
 end

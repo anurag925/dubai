@@ -1,0 +1,9 @@
+require:
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+
+Lint/MissingSuper:
+  Exclude:
+    - 'app/services/**'

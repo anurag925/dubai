@@ -13,11 +13,13 @@
 #  salt            :string(255)
 #  password_digest :string(255)
 #  parent_id       :bigint
+#  registration_no :string(255)
 #
 # Indexes
 #
-#  index_users_on_mobile_number  (mobile_number) UNIQUE
-#  index_users_on_parent_id      (parent_id)
+#  index_users_on_mobile_number    (mobile_number) UNIQUE
+#  index_users_on_parent_id        (parent_id)
+#  index_users_on_registration_no  (registration_no)
 #
 # Foreign Keys
 #

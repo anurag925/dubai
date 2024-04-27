@@ -2,6 +2,9 @@
 
 # base class for all services
 class ApplicationService
+  include Utils::LocationLogger
+  include Utils::LogDuration
+
   Response = Struct.new(:success?, :message, :data, :code)
 
   class << self

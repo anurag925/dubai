@@ -4,6 +4,13 @@ module Api
   module V1
     # apis for users
     class UsersController < ApplicationController
+      def index
+        users = User.where
+        return json_success(data: users.to_a) if invalidate_page_no
+
+        json_success(data: users.limit(per_page).offset(page_no * per_page))
+      end
+
       def register
         response = Users::RegistrationService.call(register_params)
         json_success(msg: response.msg, data: response.data) if response.success?

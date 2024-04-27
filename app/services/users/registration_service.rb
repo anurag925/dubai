@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Users
   # Service responsible for loggin in and logging out the user
   class RegistrationService < ApplicationService
-
     attr_reader :mobile_number, :otp, :name, :dob, :admin
 
     def initialize(register_params)
@@ -36,7 +37,7 @@ module Users
       @user = User.new(name:, mobile_number:, dob:, type:)
       return send_otp_to_user if user.save
 
-      error(msg: 'user creation failed', errors: user.errors.full_messages.to_sentence )
+      error(msg: 'user creation failed', errors: user.errors.full_messages.to_sentence)
     end
 
     def verify_user_using_otp

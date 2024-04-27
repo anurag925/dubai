@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   # Service responsible for loggin in and logging out the user
   class LoginService < ApplicationService

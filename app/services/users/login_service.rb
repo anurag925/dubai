@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  # Service responsible for loggin in and logging out the user
+  # Service responsible for login in and logging out the user
   class LoginService < ApplicationService
     attr_reader :mobile_number, :otp
 
@@ -11,8 +11,9 @@ module Users
     end
 
     def call
-      return error(msg: 'user not found') unless user
-      return generate_and_sent_otp if otp
+      return error(msg: 'User is not registered') unless user
+      return error(msg: 'User is blocked') if user.blocked?
+      return generate_and_sent_otp unless otp
 
       verify_otp_and_login_user
     end
@@ -20,21 +21,45 @@ module Users
     private
 
     def user
-      @user ||= User.find_by(mobile_number: login_params[:mobile_number])
+      @user ||= User.find_by(mobile_number:)
     end
 
     def generate_and_sent_otp
-      otp = OtpService.new(user).generate(Otp::Action::LOGIN)
-      return success(msg: 'otp generation successfull') if otp
+      lol("generating login otp for the user_id #{user.id}")
+      otp_generation = Otps::Sender.call(user, Otp::Action::LOGIN)
+      return success(data: otp_sent_successfully) if otp_generation.success?
 
-      error(msg: 'unable to generate otp')
+      error(msg: 'Unable to send otp')
     end
 
     def verify_otp_and_login_user
-      verified = OtpService.new(user).verify(Otp::Action::LOGIN, otp)
-      return success(msg: 'otp verification success') if verified
+      lol("verifying login otp for the user_id #{user.id}")
+      otp_verification = Otps::Utility.new(user).verify(Otp::Action::LOGIN, otp)
+      return handle_success_otp_verification if otp_verification.success?
 
-      error(msg: 'otp verification failed')
+      error(msg: 'Otp verification failed')
+    end
+
+    def handle_success_otp_verification
+      lol("logging in user_id #{user.id}")
+      unless user.verified?
+        lol("marking user_id #{user.id} verified")
+        user.verified!
+      end
+      success(data: login_response)
+    end
+
+    def login_response
+      {
+        user:,
+        token: user.token
+      }
+    end
+
+    def otp_sent_successfully
+      {
+        msg: 'Otp sent successfully'
+      }
     end
   end
 end

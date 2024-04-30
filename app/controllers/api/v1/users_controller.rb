@@ -13,22 +13,22 @@ module Api
 
       def register
         response = Users::RegistrationService.call(register_params)
-        json_success(msg: response.msg, data: response.data) if response.success?
+        return json_success(msg: response.msg, data: response.data) if response.success?
 
         json_failure(msg: response.msg, data: response.data)
       end
 
       def login
         response = Users::LoginService.call(login_params)
-        json_success(msg: response.msg, data: response.data) if response.success?
+        return json_success(msg: response.msg, data: response.data) if response.success?
 
-        json_unauthorised(msg: response.msg, data: response.data)
+        json_unauthorized(msg: response.msg, data: response.data)
       end
 
       private
 
       def register_params
-        params.require(:user).permit(:mobile_number, :otp)
+        params.require(:user).permit(:mobile_number, :otp, :dob, :type, :parent_id)
       end
 
       def login_params

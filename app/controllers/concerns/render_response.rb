@@ -20,11 +20,11 @@ module RenderResponse
     render json: render_failure(msg:, error_code:, data:), status: :bad_request
   end
 
-  def json_unauthorised(msg: '', data: {})
-    render json: render_failure(msg:, error_code: :unauthorised, data:), status: :unauthorised
+  def json_unauthorized(msg: '', data: {})
+    render json: render_failure(msg:, error_code: :unauthorized, data:), status: :unauthorized
   end
 
-  def json_notfound(msg: '', data: {})
+  def json_not_found(msg: '', data: {})
     render json: render_failure(msg:, error_code: 'record_not_found', data:), status: :not_found
   end
 
@@ -40,12 +40,12 @@ module RenderResponse
     {
       success: false,
       message: msg,
-      error_code: errors_code(error_code),
+      # error_code: errors_code(error_code),
       data:
     }
   end
 
   def errors_code(error = nil)
-    ::Errors::Handler.code(error)
+    Errors::Handler.code(error)
   end
 end

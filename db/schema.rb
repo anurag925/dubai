@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_27_062524) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_30_171715) do
   create_table "contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -125,6 +125,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_062524) do
     t.string "password_digest"
     t.bigint "parent_id"
     t.string "registration_no"
+    t.string "dob"
     t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
     t.index ["parent_id"], name: "index_users_on_parent_id"
     t.index ["registration_no"], name: "index_users_on_registration_no"

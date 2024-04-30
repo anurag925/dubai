@@ -1,21 +1,24 @@
 # frozen_string_literal: true
 
 module Users
-  # Service responsible for loggin in and logging out the user
+  # Service responsible for registration of user
   class RegistrationService < ApplicationService
-    attr_reader :mobile_number, :otp, :name, :dob, :admin
+    attr_reader :user_params, :otp
 
+    # @param [Hash] register_params
+    # @option register_params [String] :mobile_number
+    # @option register_params [String] :otp
+    # @option register_params [String] :dob
+    # @option register_params [Integer] :parent_id
+    # @option register_params [String] :type
+    # @return [ApplicationService]
     def initialize(register_params)
-      @name = register_params[:name]
-      @mobile_number = register_params[:mobile_number]
-      @dob = register_params[:dob]
-      @admin = register_params[:admin]
-      @type = register_params[:type]
-      @otp = login_params[:otp]
+      @user_params = register_params.except(:otp)
+      @otp = register_params[:otp]
     end
 
     def call
-      handle_users_presence if user
+      return handle_users_presence if user
 
       handle_users_absence
     end
@@ -23,21 +26,26 @@ module Users
     private
 
     def user
-      @user ||= User.find_by(mobile_number:)
+      @user ||= User.find_by(mobile_number: user_params[:mobile_number])
     end
 
     def handle_users_presence
-      success(msg: 'user already registered') if admin
-      verify_user_using_otp unless user.verified?
+      lol("registration triggered for user already registered for user_id #{user.id}")
+      return success_msg('User already registered') if user_params[:parent_id].present?
+      return verify_user_using_otp unless user.verified?
 
-      error(msg: 'please login')
+      error(msg: 'Please login')
     end
 
     def handle_users_absence
-      @user = User.new(name:, mobile_number:, dob:, type:)
-      return send_otp_to_user if user.save
+      create_user_response = Users::CreateHelper.call(user_params)
+      if create_user_response.success?
+        @user = create_user_response.data
+        lol("user creation success for user_id #{user.id}")
+        return verify_user_using_otp
+      end
 
-      error(msg: 'user creation failed', errors: user.errors.full_messages.to_sentence)
+      error(msg: create_user_response.msg)
     end
 
     def verify_user_using_otp
@@ -47,17 +55,31 @@ module Users
     end
 
     def verify_user_otp
-      verified = OtpService.new(user).verify(Otp::Action::REGISTRATION, otp)
-      return success(msg: 'otp verification success') if verified
+      lol("verifying otp for user_id #{user.id} for registration otp #{otp}")
+      otp_verification = Otps::Utility.new(user).verify(Otp::Action::REGISTRATION, otp)
+      return handle_success_otp_verification if otp_verification.success?
 
-      error(msg: 'otp verification failed')
+      error(msg: 'Otp verification failed')
+    end
+
+    def handle_success_otp_verification
+      lol("verifying during registration user_id #{user.id}")
+      unless user.verified?
+        lol("marking user_id #{user.id} verified")
+        user.verified!
+      end
+      success_msg('Otp verification success please login')
     end
 
     def send_otp_to_user
-      otp = OtpService.new(user).generate(Otp::Action::REGISTRATION)
-      send_otp(otp.data) if otp.success
+      sending_otp = Otps::Sender.call(user, Otp::Action::REGISTRATION)
+      return success_msg('Otp sent successfully') if sending_otp.success?
 
-      error(msg: 'otp generation failed')
+      error(msg: 'Otp generation failed')
+    end
+
+    def success_msg(msg)
+      success(data: { msg: })
     end
   end
 end

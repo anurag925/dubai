@@ -16,6 +16,7 @@
 #  password_digest :string(255)
 #  parent_id       :bigint
 #  registration_no :string(255)
+#  dob             :string(255)
 #
 # Indexes
 #
@@ -43,15 +44,11 @@ class User < ApplicationRecord
   has_many :inbound_transfers, class_name: 'InventoryTransfer', foreign_key: 'receiver_id', inverse_of: :receiver,
                                dependent: :restrict_with_exception
 
-  enum status: { created: 0, verified: 1, active: 3, inactive: 4, blocked: 5 }
+  enum status: { created: 0, verified: 1, blocked: 2 }
   enum type: { admin: 0, area_development_officer: 1, master_distributor: 2, super_distributor: 3, distributor: 4 }
 
-  def verified?
-    status != 'created'
-  end
-
   def token
-    Utils::Jwt..encode({ id:, mobile_number: })
+    Utils::Jwt.encode({ id:, mobile_number: })
   end
 
   def authenticate(password)

@@ -4,8 +4,9 @@
 class ApplicationService
   include Utils::LocationLogger
   include Utils::LogDuration
+  include Utils::SoulSaver
 
-  Response = Struct.new(:success?, :message, :data, :code)
+  Response = Struct.new(:success?, :msg, :data, :code)
 
   class << self
     def call(*)
@@ -16,7 +17,7 @@ class ApplicationService
   # method returns success from a given service
   # @param msg [String]
   # @param data [Any]
-  # @returns [Resonse]
+  # @returns [Response]
   def success(msg: '', data: {})
     Response.new(true, msg, data)
   end
@@ -25,8 +26,13 @@ class ApplicationService
   # @param msg [String]
   # @param data [Any]
   # @param code [String]
-  # @returns [Resonse]
+  # @returns [Response]
   def error(msg: '', data: {}, code: '')
     Response.new(false, msg, data, code)
+  end
+
+  def alert!(message, code: '', extra: {})
+    sos(message, code:, extra:, caller: caller_locations(1, 1).first)
+    lol("#{message} extra: #{extra.inspect}", :e, caller: caller_locations(1, 1).first)
   end
 end

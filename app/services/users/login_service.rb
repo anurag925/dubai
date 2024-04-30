@@ -27,7 +27,7 @@ module Users
     def generate_and_sent_otp
       lol("generating login otp for the user_id #{user.id}")
       otp_generation = Otps::Sender.call(user, Otp::Action::LOGIN)
-      return success(data: otp_sent_successfully) if otp_generation.success?
+      return success_msg('Otp sent successfully') if otp_generation.success?
 
       error(msg: 'Unable to send otp')
     end
@@ -53,12 +53,6 @@ module Users
       {
         user:,
         token: user.token
-      }
-    end
-
-    def otp_sent_successfully
-      {
-        msg: 'Otp sent successfully'
       }
     end
   end

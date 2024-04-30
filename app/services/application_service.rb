@@ -31,6 +31,15 @@ class ApplicationService
     Response.new(false, msg, data, code)
   end
 
+  # @param msg [String]
+  def success_msg(msg)
+    success(data: { msg: })
+  end
+
+  # method used for logging and adding an alert
+  # @param message [String]
+  # @param code [String]
+  # @param extra [Hash]
   def alert!(message, code: '', extra: {})
     sos(message, code:, extra:, caller: caller_locations(1, 1).first)
     lol("#{message} extra: #{extra.inspect}", :e, caller: caller_locations(1, 1).first)

@@ -68,6 +68,8 @@ group :development do
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubycritic', require: false
+
+  gem 'rack-cors'
 end
 
 group :test do

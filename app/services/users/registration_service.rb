@@ -77,9 +77,5 @@ module Users
 
       error(msg: 'Otp generation failed')
     end
-
-    def success_msg(msg)
-      success(data: { msg: })
-    end
   end
 end

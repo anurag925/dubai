@@ -14,9 +14,7 @@ module Sales
     end
 
     def call
-      inventories.each do |inventory|
-        report << generate_report_for_inventory(inventory)
-      end
+      generate_report_for_each_inventory_item
       lol("the report for user_id #{user.id}, start #{start_date}, end #{end_date}, report #{report}")
       success(data: report)
     rescue StandardError => e
@@ -26,6 +24,12 @@ module Sales
     end
 
     private
+
+    def generate_report_for_each_inventory_item
+      inventories.each do |inventory|
+        report << generate_report_for_inventory(inventory)
+      end
+    end
 
     def inventories
       @inventories ||= user.inventories.includes(:product)

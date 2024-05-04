@@ -4,8 +4,10 @@ module Api
   module V1
     # apis for users
     class UsersController < ApplicationController
+      before_action :authorize_admin!, only: [:index]
+
       def index
-        users = User.where
+        users = User.where('1=1')
         return json_success(data: users.to_a) if invalidate_page_no
 
         json_success(data: users.limit(per_page).offset(page_no * per_page))

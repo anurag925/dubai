@@ -2,7 +2,10 @@
 
 module Api
   module V1
+    # Controller responsible for showing sales data
     class SalesController < ApplicationController
+      before_action :authorize_user!
+
       def details
         res = Sales::InventoryReport.call(current_user, start_date, end_date)
         return json_success(data: res.data) if res.success?

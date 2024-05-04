@@ -6,6 +6,7 @@ module Users
     attr_reader :user_params, :otp
 
     # @param [Hash] register_params
+    # @option register_params [String] :name
     # @option register_params [String] :mobile_number
     # @option register_params [String] :otp
     # @option register_params [String] :dob

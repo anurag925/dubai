@@ -30,7 +30,7 @@ module Api
       private
 
       def register_params
-        params.require(:user).permit(:mobile_number, :otp, :dob, :type, :parent_id)
+        params.require(:user).permit(:name, :mobile_number, :otp, :dob, :type, :parent_id)
       end
 
       def login_params

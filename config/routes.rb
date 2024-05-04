@@ -27,6 +27,12 @@ Rails.application.routes.draw do
           get :customer_report
         end
       end
+
+      resources :inventory_transfers do
+        collection do
+          get :transfer_details
+        end
+      end
     end
   end
 end

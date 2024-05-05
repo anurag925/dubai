@@ -25,6 +25,7 @@ module Inventories
 
     def generate_details(inventory)
       {
+        display_name: "#{inventory.product.name} #{inventory.product.category}",
         name: inventory.product.name,
         category: inventory.product.category,
         quantity: inventory.quantity,

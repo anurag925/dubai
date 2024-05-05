@@ -10,8 +10,9 @@ module Api
 
       def transfer_details
         res = {
-          product_details: Inventories::AvailableProducts.call(current_user),
+          product_details: Inventories::AvailableProducts.call(current_user).data,
           area_development_officers: User.area_development_officer.where(parent_id: 1).pluck(:id, :name)
+                                         .map { |id, name| { id:, name: } }
         }
         json_success(data: res)
       end

@@ -28,8 +28,9 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :inventory_transfers do
+      resources :inventory_transfers, only: %i[] do
         collection do
+          post :transfer
           get :transfer_details
         end
       end

@@ -43,6 +43,7 @@ class User < ApplicationRecord
                                 dependent: :restrict_with_exception
   has_many :inbound_transfers, class_name: 'InventoryTransfer', foreign_key: 'receiver_id', inverse_of: :receiver,
                                dependent: :restrict_with_exception
+  has_many :targets, dependent: :restrict_with_exception
 
   enum status: { created: 0, verified: 1, blocked: 2 }
   enum type: { admin: 0, area_development_officer: 1, master_distributor: 2, super_distributor: 3, distributor: 4 }

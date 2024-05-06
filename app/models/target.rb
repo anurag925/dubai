@@ -17,4 +17,5 @@
 #  index_targets_on_user_id     (user_id)
 #
 class Target < ApplicationRecord
+  belongs_to :user
 end

@@ -4,7 +4,7 @@ module Inventories
   # Transfer is responsible for transferring inventory from one user to another
   # it takes care of one to one transfer
   class Transfer < ApplicationService
-    attr_reader :sender, :receiver, :quantity, :product_id, :transfer_id
+    attr_reader :sender, :receiver, :quantity, :product_id, :transfer_id, :transfer_options
 
     # @param sender [User]
     # @param receiver [User]
@@ -22,7 +22,7 @@ module Inventories
     def call
       return error(msg: 'sender has less quantity than need') if sender_inventory.quantity < quantity
 
-      lol("transferring inventory id #{transfer_id} from #{sender.id} to #{receiver.id} for #{product.id} quantity #{quantity}")
+      lol("transferring inventory id #{transfer_id} from #{sender.id} to #{receiver.id} for #{transfer_options}")
       perform_transfer
       success(msg: 'transfer done successfully')
     end

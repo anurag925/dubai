@@ -42,5 +42,5 @@
 /config/credentials/development.key
 
 # Configs
-/config/databases.yml
+/config/database.yml
 
